@@ -16,7 +16,7 @@ const SignInScreen = () => {
         style={[styles.logo, {height: height * 0.3}]}
         resizeMode="contain"
       />
-      <CustomInput placeholder="Username" value={username} setValue={setUsername} secureTextEntry={false} />
+      <CustomInput placeholder="Username" value={username} setValue={setUsername} />
       <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry={true} />
     </View>
   );

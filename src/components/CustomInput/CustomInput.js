@@ -29,6 +29,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   input: {
-    // color: 'black'
+    color: 'black'
   },
 });

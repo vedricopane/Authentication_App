@@ -2,34 +2,41 @@ import {StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation} from '@react-navigation/native';
+import {useForm} from 'react-hook-form';
 
 const ForgotPasswordScreen = () => {
-  const [username, setUsername] = useState('');
+  const {control, handleSubmit} = useForm();
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
-  const onSendPressed = () => {
-    navigation.navigate('NewPassword')
+  const onSendPressed = (data) => {
+    console.warn(data)
+    navigation.navigate('NewPassword');
   };
 
   const onSignInPressed = () => {
-    navigation.navigate('SignIn')
-  }
+    navigation.navigate('SignIn');
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Reset your password</Text>
 
       <CustomInput
+        name="username"
         placeholder="Enter your username"
-        value={username}
-        setValue={setUsername}
+        control={control}
+        rules={{required: 'Username is required'}}
       />
 
-      <CustomButton text="Send" onPress={onSendPressed} />
+      <CustomButton text="Send" onPress={handleSubmit(onSendPressed)} />
 
-      <CustomButton text="Back to Sign In" onPress={onSignInPressed} type="TERTIARY" />
+      <CustomButton
+        text="Back to Sign In"
+        onPress={onSignInPressed}
+        type="TERTIARY"
+      />
     </View>
   );
 };
@@ -46,5 +53,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#051c60',
     margin: 10,
-  }
+  },
 });

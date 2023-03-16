@@ -3,13 +3,15 @@ import React, {useState} from 'react';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import {useNavigation} from '@react-navigation/native';
+import {useForm} from 'react-hook-form'
 
 const ConfirmEmailScreen = () => {
-  const [code, setCode] = useState('');
+  const {control, handleSubmit} = useForm()
 
   const navigation = useNavigation();
 
-  const onConfirmPressed = () => {
+  const onConfirmPressed = (data) => {
+    console.warn(data)
     navigation.navigate('Home');
   };
 
@@ -26,12 +28,13 @@ const ConfirmEmailScreen = () => {
       <Text style={styles.title}>Confirm your email</Text>
 
       <CustomInput
+      name='code'
         placeholder="Enter your confirmation code"
-        value={code}
-        setValue={setCode}
+        control={control}
+        rules={{ required: 'Confirmation code is required' }}
       />
 
-      <CustomButton text="Confirm" onPress={onConfirmPressed} />
+      <CustomButton text="Confirm" onPress={handleSubmit(onConfirmPressed)} />
 
       <CustomButton
         text="Resend Code"

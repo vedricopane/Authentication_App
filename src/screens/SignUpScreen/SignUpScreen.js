@@ -3,19 +3,21 @@ import React, {useState} from 'react';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SosialMediaSignInButton from '../../components/SosialMediaSignInButton';
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation} from '@react-navigation/native';
+import {useForm} from 'react-hook-form';
+
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&`*+/=?^_'{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SignUpScreen = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordRepeat, setPasswordRepeat] = useState('');
+  const {control, handleSubmit, watch} = useForm();
 
-  const navigation = useNavigation()
+  const pwd = watch('password');
+  const navigation = useNavigation();
 
   const onRegisterPressed = () => {
     console.warn('Register');
-    navigation.navigate('ConfirmEmail')
+    navigation.navigate('ConfirmEmail');
   };
 
   const onTermsOfUSePressed = () => {
@@ -28,8 +30,8 @@ const SignUpScreen = () => {
 
   const onSignInPressed = () => {
     console.warn('Sign In');
-    navigation.navigate('SignIn')
-  }
+    navigation.navigate('SignIn');
+  };
 
   return (
     <ScrollView>
@@ -37,25 +39,52 @@ const SignUpScreen = () => {
         <Text style={styles.title}>Create an account</Text>
 
         <CustomInput
+          name="username"
           placeholder="Username"
-          value={username}
-          setValue={setUsername}
+          control={control}
+          rules={{
+            required: 'Username is required',
+            minLength: {
+              value: 3,
+              message: 'Username should be at least 3 characters long',
+            },
+            maxLength: {
+              value: 24,
+              message: 'Username should be at least 24 characters long',
+            },
+          }}
         />
-        <CustomInput placeholder="Email" value={email} setValue={setEmail} />
         <CustomInput
+          name="email"
+          placeholder="Email"
+          control={control}
+          rules={{pattern: {value: EMAIL_REGEX, message: 'Email is invalid'}}}
+        />
+        <CustomInput
+          name="password"
           placeholder="Password"
-          value={password}
-          setValue={setPassword}
+          control={control}
           secureTextEntry={true}
+          rules={{
+            required: 'Password is required',
+            minLength: {
+              value: 8,
+              message: 'Password should be at least 8 characters long',
+            },
+          }}
         />
         <CustomInput
+          name="password-repeat"
           placeholder="Repeat Password"
-          value={passwordRepeat}
-          setValue={setPasswordRepeat}
+          control={control}
           secureTextEntry={true}
+          rules={{validate: value => value === pwd || 'Password do not match'}}
         />
 
-        <CustomButton text="Register" onPress={onRegisterPressed} />
+        <CustomButton
+          text="Register"
+          onPress={handleSubmit(onRegisterPressed)}
+        />
 
         <Text style={styles.text}>
           By registering, you confirm that you accept our{' '}
@@ -70,7 +99,11 @@ const SignUpScreen = () => {
 
         <SosialMediaSignInButton />
 
-        <CustomButton text="Have an account ? Sign In" onPress={onSignInPressed} type='TERTIARY' />
+        <CustomButton
+          text="Have an account ? Sign In"
+          onPress={onSignInPressed}
+          type="TERTIARY"
+        />
       </View>
     </ScrollView>
   );

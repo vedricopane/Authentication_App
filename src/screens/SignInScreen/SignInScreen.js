@@ -3,6 +3,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -12,27 +13,30 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SosialMediaSignInButton from '../../components/SosialMediaSignInButton';
 import {useNavigation} from '@react-navigation/native';
+import {useForm} from 'react-hook-form';
 
 const SignInScreen = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
 
   const {height} = useWindowDimensions();
   const navigation = useNavigation();
 
-  const onSignInPressed = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm();
 
+  const onSignInPressed = data => {
+    console.log(data);
     navigation.navigate('Home');
   };
 
   const onForgotPasswordPressed = () => {
-
-    navigation.navigate('ForgotPassword')
+    navigation.navigate('ForgotPassword');
   };
 
   const onSignUpPressed = () => {
-
-    navigation.navigate('SignUp')
+    navigation.navigate('SignUp');
   };
 
   return (
@@ -45,18 +49,23 @@ const SignInScreen = () => {
         />
 
         <CustomInput
+          name="username"
           placeholder="Username"
-          value={username}
-          setValue={setUsername}
+          control={control}
+          //rules adalah validation rules untuk menghandle eror pada form yg dibantu pada rules di CustomInput.js
+          rules={{required: 'Username is required'}}
         />
         <CustomInput
+          name="password"
           placeholder="Password"
-          value={password}
-          setValue={setPassword}
+          control={control}
           secureTextEntry={true}
+          rules={{required: 'Password is required', minLength: {value: 3, message: 'Password should be minimum 3 characters long'}}}
         />
 
-        <CustomButton text="Login" onPress={onSignInPressed} />
+        {/* <TextInput placeholder="password" placeholderTextColor="gray" /> */}
+
+        <CustomButton text="Login" onPress={handleSubmit(onSignInPressed)} />
 
         <CustomButton
           text="Forgot Password ?"
